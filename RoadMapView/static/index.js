@@ -6,6 +6,77 @@ var markers = []
 var counter = 0
 var TIME_OUT_DEBUG = 0;
 var potholes = []
+var boxes = []
+var show_road = false;
+var show_bounding_box = false;
+var lastBox;
+
+function see_road(){
+    show_road = true;
+    clear_all_road_and_pothole()
+    get_map_data_for(map,bbox)
+    var temp = show_bounding_box
+    erase_bounding_box()
+    show_bounding_box = temp
+}
+function see_pothole(){
+    show_road = false;
+    clear_all_road_and_pothole()
+    get_pothole_data_for(map,bbox)
+    var temp = show_bounding_box
+    erase_bounding_box()
+    show_bounding_box = temp
+}
+
+function erase_bounding_box(){
+    show_bounding_box = false;
+
+    for(var box in boxes)
+        boxes[box].setMap(null);
+    
+        boxes = []
+}
+
+function activate_bounding_box(){
+    if(!show_bounding_box){
+        document.getElementById('bb_show').innerText = 'Erase bounding box'
+        see_bounding_box(lastBox)
+        show_bounding_box = true
+    } else {
+        document.getElementById('bb_show').innerText = 'Show bounding box'
+        erase_bounding_box()
+        show_bounding_box = false
+    }
+    // show_bounding_box = !show_bounding_box;
+}
+
+function see_bounding_box(r){
+    var flightPath = new google.maps.Polyline({
+        path:r,
+        geodesic: true,
+        strokeColor: '#000', //change color for every line
+        strokeOpacity: 1.0,
+        strokeWeight: 5
+    })
+
+    boxes.push(flightPath);
+
+    flightPath.setMap(map);
+}
+
+function clear_all_road_and_pothole(){
+    for (var line in reds) {
+        reds[line].setMap(null)
+    }
+    reds = []
+
+    for (var hole in potholes){
+        potholes[hole].setMap(null)
+    }
+    potholes = []
+
+    console.log("all clear")
+}
 
 function initMap() {
     var iit_location = {lat: 19.124910138009756, lng: 72.91621232284234};
@@ -54,21 +125,12 @@ function initMap() {
 
         console.log(bbox)
 
-        for (var line in reds) {
-            reds[line].setMap(null)
-        }
-        reds = []
-
-        for (var hole in potholes){
-            potholes[hole].setMap(null)
-        }
-        potholes = []
-
-        console.log("all clear")
+        clear_all_road_and_pothole()
 
         window.setTimeout(function(){
-            get_map_data_for(map,bbox)
-            // get_pothole_data_for(map,bbox)
+            if(show_road)
+                get_map_data_for(map,bbox)
+            else get_pothole_data_for(map,bbox)
         },TIME_OUT_DEBUG)
     });
 
@@ -120,29 +182,14 @@ function get_pothole_data_for(map,bbox){
         type: 'POST'
       }).done(function(response){
         console.log(response['list'][0]);
-        console.log({lat: 72.90909269756398, lng: 19.125626230321046});
 
-        // marker = new google.maps.Marker({
-        //     position: {lng: 72.90909269756398, lat: 19.125626230321046},
-        //     map: map,
-        //     // icon: icons['parking'].icon
-        //     icon: {
-        //         path: google.maps.SymbolPath.CIRCLE,
-        //         fillColor: '#00f',
-        //         fillOpacity: 0.6,
-        //         strokeColor: '#00f',
-        //         strokeOpacity: 0.9,
-        //         strokeWeight: 1,
-        //         scale: 3
-        //     }
-        // });
+        lastBox = response['geom'];
+
+        if(show_bounding_box)
+            see_bounding_box(lastBox)
 
         var skipPoints = 1
         var zoom = map.zoom
-
-        // if(zoom < 18 && zoom >=8){
-        //     skipPoints = (18 - zoom)*5
-        // }
 
         response['list'].forEach(myFunction);
         function myFunction(item,index){
@@ -169,67 +216,6 @@ function get_pothole_data_for(map,bbox){
                 potholes.push(marker)
             }
         }
-            // console.log(response)
-
-    //     var flightPath = new google.maps.Polyline({
-    //         path:response['geom'],
-    //         geodesic: true,
-    //         strokeColor: '#000', //change color for every line
-    //         strokeOpacity: 1.0,
-    //         strokeWeight: 5
-    //     }).setMap(map);
-
-
-
-    //     all_road_10m_min_distance = response['list']
-
-    //     for (var points in all_road_10m_min_distance) {
-    //         total_points = all_road_10m_min_distance[points]['latlongs'].length
-    //         pt = 0
-    //         while (pt < total_points) {
-    //             // color =color +0xFF ;
-    //             index++;
-    //             if (index % 3 == 1) {
-    //                 color = color_red;
-    //             } else if (index % 3 == 2) {
-    //                 color = color_red;
-    //             } else if (index % 3 == 0) {
-    //                 color = color_red;
-    //             }
-    //             if (typeof all_road_10m_min_distance[points]['latlongs'][pt + 1] != "undefined") {
-    //                 var flightPath = new google.maps.Polyline({
-    //                     path:
-    //                         [all_road_10m_min_distance[points]['latlongs'][pt],
-    //                         all_road_10m_min_distance[points]['latlongs'][pt + 1]]
-    //                     ,
-    //                     geodesic: true,
-    //                     strokeColor: '#f00', //change color for every line
-    //                     strokeOpacity: 1.0,
-    //                     strokeWeight: 5
-    //                 });
-    //                 flightPath.idfromopenstreet = all_road_10m_min_distance[points]["id"]
-    //                 flightPath.midLatLang = all_road_10m_min_distance[points]['latlongs'][pt]
-    //                 flightPath.addListener("click", function () {
-    //                     // console.log(this.idfromopenstreet)
-    //                     var infowindow = new google.maps.InfoWindow({
-    //                         content: this.idfromopenstreet.toString()
-    //                     });
-    //                     infowindow.setPosition(this.midLatLang);
-    //                     infowindow.open(map)
-    //                 })
-
-    //                 // console.log([all_road_10m_min_distance[points]['latlongs'][pt],
-    //                 //     all_road_10m_min_distance[points]['latlongs'][pt+1]])
-    //                 //flightPath.setMap(map);
-    //                 reds.push(flightPath)
-    //             }else console.log("total_points"+total_points+" , pt"+" "+pt)
-    //             pt = pt + 1;
-    //         }
-    //     }        
-
-    //     for (var line in reds) {
-    //         reds[line].setMap(map)
-    //     }
     });
 }
 
@@ -249,15 +235,10 @@ function get_map_data_for(map,bbox){
       }).done(function(response){
         console.log(response['list']);
 
+        lastBox = response['geom'];
 
-        var flightPath = new google.maps.Polyline({
-            path:response['geom'],
-            geodesic: true,
-            strokeColor: '#000', //change color for every line
-            strokeOpacity: 1.0,
-            strokeWeight: 5
-        }).setMap(map);
-
+        if(show_bounding_box)
+            see_bounding_box(lastBox)
         
         all_road_10m_min_distance = response['list']
 
@@ -296,9 +277,6 @@ function get_map_data_for(map,bbox){
                         infowindow.open(map)
                     })
 
-                    // console.log([all_road_10m_min_distance[points]['latlongs'][pt],
-                    //     all_road_10m_min_distance[points]['latlongs'][pt+1]])
-                    //flightPath.setMap(map);
                     reds.push(flightPath)
                 }else console.log("total_points"+total_points+" , pt"+" "+pt)
                 pt = pt + 1;
@@ -347,40 +325,6 @@ function CenterControl(controlDiv, map) {
     });
 
 }
-
-// function toggleCheckbox(evt) {
-//     // console.log(evt.value    + evt.checked)
-
-//     if (map == undefined) {
-//         alert("map not initialied");
-//         return
-//     }
-//     if (evt.value == "red" && evt.checked) {
-//         for (var line in reds) {
-//             reds[line].setMap(map)
-//         }
-//         for (var line in greens) {
-//             greens[line].setMap(null)
-//         }
-//     } else if (evt.value == "green" && evt.checked) {
-//         for (var line in reds) {
-//             reds[line].setMap(null)
-//         }
-//         for (var line in greens) {
-//             greens[line].setMap(map)
-//         }
-//     } else if (evt.value == "both" && evt.checked) {
-//         for (var line in reds) {
-//             reds[line].setMap(map)
-//         }
-//         for (var line in greens) {
-//             greens[line].setMap(map)
-//         }
-//     } else {
-//         alert("Ooops Something bad")
-//     }
-// }
-
 
 function sleep(milliseconds) {
     const date = Date.now();

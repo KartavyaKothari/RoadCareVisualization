@@ -69,7 +69,7 @@ def binarySearchwithTolerance(arr, x,t):
     l=0
     r=len(arr)-1
     while l <= r: 
-        mid = int(l + (r - l)/2); 
+        mid = int(l + (r - l)/2)
         if abs(arr[mid].bearing - x) <= t: 
             # we found someone in tolerance
             index =mid
