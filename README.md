@@ -24,3 +24,15 @@ commands to be executed in order
 8. Install requirements using pip (`pip install -r requirements.txt`)
 12. Create super user (`python manage.py createsuperuser`)
 13. Run server (`python manage.py runserver`)
+
+## Populating data scripts
+
+Populate data using osm file placed in tmp folder
+1. Run OSM parser (`python manage.py runscript osm-handle`)
+2. Break road data into 10m chunks (`python manage.py runscript add-intermediate-points`)
+3. If you want to limit the road data to a particular region edit the file and run (`python manage.py runscript bounded-10m-points`)
+4. To get pothole data from a **predictions_dump.txt** dump edit and run (`python manage.py runscript get_last_7_days_pothole_data`)
+5. Now fill in road data in postgis enbaled postgres database (`python manage.py runscript fill-osm-roaddata-in-db`)
+6. Fill in reference points for nearest road API (`python manage.py runscript fill-reference-points-for-nearestapi-in-db`)
+7. Fill the raw pothole data in DB (Last 7 days) (`python manage.py runscript fill-pothole-data-in-db`)
+8. Finally snap all these points to nearest road coordinates and fill in the DB (`python manage.py runscript apply-snaptoroad-api-on-pothole`)
