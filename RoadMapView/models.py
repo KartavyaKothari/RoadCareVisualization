@@ -28,6 +28,7 @@ class RoadPothole_snapped(models.Model):
     point = models.PointField()
     rating = models.FloatField()
     bearing = models.FloatField()
+    total_potholes = models.IntegerField()
 
     def __str__(self):
         return "lat: "+str(self.point.x)+", lng: "+str(self.point.y)+", rating: "+str(self.rating)+", bearing: "+str(self.bearing)

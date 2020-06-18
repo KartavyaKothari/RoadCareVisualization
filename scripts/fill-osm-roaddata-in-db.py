@@ -16,6 +16,7 @@ def run():
 
     content = content.split("=")[1]
     json_data = json.loads(content)
+    
     for v in json_data:
         latlons= v['latlongs']
         mp = MultiPoint()
@@ -25,5 +26,5 @@ def run():
         rd = RoadData(multipoint=mp,osm_id=str(v['id']))
         # print(rd)
         rd.save()
-        
+    
     print(len( RoadData.objects.all()))
