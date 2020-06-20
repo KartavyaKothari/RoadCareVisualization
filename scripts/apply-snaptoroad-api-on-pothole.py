@@ -9,6 +9,8 @@ import pandas as pd
 from django.contrib.gis.geos import Polygon
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+import time
+import numpy as np
 
 def run():
     # Delete previous data
@@ -17,12 +19,14 @@ def run():
 
     # Seetting the nearest road api
     search_distance = 50
-
+    time_req = []
     for r in rp:
         output_pt=None
         input_pt = Point(r.point.x,r.point.y)
 
+        start_time = time.time()
         matched_points = RoadPoint.objects.filter(point__distance_lt=(input_pt,D(m=search_distance)))
+        time_req.append(time.time()-start_time)
         
         if len(matched_points) != 0:
             output_pt = matched_points[0].point
@@ -37,3 +41,5 @@ def run():
             pothole.save()
     
     print(len(RoadPothole_snapped.objects.all()))
+    time_req = np.array(time_req)
+    print("Mean:",np.mean(time_req,axis=0)*1000,"(ms)"," Std:",np.std(time_req,axis=0)*1000,"(ms)")
