@@ -1,0 +1,6 @@
+Neural network implementation
+=============================
+
+.. automodule:: scripts.nn
+    :members:
+    :undoc-members:

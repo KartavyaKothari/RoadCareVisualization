@@ -116,25 +116,15 @@ def get_potholes_from_db(request):
                 'lng':geom[0][0][0]}
                 ]
 
-        # rp = RoadPothole.objects.all()
-        # print(rp[0].point)
         rp = RoadPothole_snapped.objects.filter(point__within=geom).distinct('point')
         print("count :",rp.count())
         all_pothole_data = []
 
-        # print(rp[0])
-
         for r in rp:
-            # print(r[0],r[1])
-            # temp={}
-            # temp['id']=r.osm_id
-            # temp['latlongs']=[]
-            # for ll in r.multipoint:
-            #     temp['latlongs'].append({
-            #         "lat":ll.y,
-            #         "lng":ll.x
-            #     })
-            all_pothole_data.append({ 'lat' : r.point.y , 'lng' : r.point.x })
+            temp = {}
+            temp['pot_loc'] = { 'lat' : r.point.y , 'lng' : r.point.x }
+            temp['rating'] = r.rating
+            all_pothole_data.append(temp)
 
         message = {'list': all_pothole_data,'geom':box}
 
@@ -178,23 +168,7 @@ def get_roads_from_db(request):
                     "lng":ll.x
                 })
             all_road_data.append(temp)
-            # print(temp)
 
-        # ne = (19.136605420061482, 72.91854322098668)
-        # sw = (19.12949450339526, 72.90821877901332)
-
-        # xmin=sw[1]
-        # ymin=sw[0]
-        # xmax=ne[1]
-        # ymax=ne[0]
-
-        # bbox = (xmin, ymin, xmax, ymax)
-
-        # geom = Polygon.from_bbox(bbox)
-        # q = RoadPoint.objects.filter(point__within=geom)
-        # print(q)
-        # all_road_data = ['a','b','c']
-        # print
         message = {'list': all_road_data,'geom':box}
 
     return JsonResponse(message)

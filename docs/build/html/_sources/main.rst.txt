@@ -1,0 +1,6 @@
+XOR and MNIST program
+=====================
+
+.. automodule:: scripts.main
+    :members:
+    :undoc-members:

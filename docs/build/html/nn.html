@@ -1,0 +1,407 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural network implementation &#8212; Roadcare visulisation  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="XOR and MNIST progrdm" href="add_intermediate_points.html" />
+    <link rel="prev" title="XOR and MNIST program" href="main.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-scripts.nn">
+<span id="neural-network-implementation"></span><h1>Neural network implementation<a class="headerlink" href="#module-scripts.nn" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="scripts.nn.FullyConnectedLayer">
+<em class="property">class </em><code class="sig-prename descclassname">scripts.nn.</code><code class="sig-name descname">FullyConnectedLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_nodes</span></em>, <em class="sig-param"><span class="n">out_nodes</span></em>, <em class="sig-param"><span class="n">activation</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="scripts.nn.FullyConnectedLayer.backwardpass">
+<code class="sig-name descname">backwardpass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">activation_prev</span></em>, <em class="sig-param"><span class="n">delta</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer.backwardpass" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>activation_prev</strong> – Output from next layer/input | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p></li>
+<li><p><strong>delta</strong> – <code class="docutils literal notranslate"><span class="pre">del_Error/</span> <span class="pre">del_activation_curr</span></code> | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">self.out_nodes</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>new_delta: <code class="docutils literal notranslate"><span class="pre">del_Error/</span> <span class="pre">del_activation_prev</span></code> | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">self.in_nodes</span></code></p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.FullyConnectedLayer.forwardpass">
+<code class="sig-name descname">forwardpass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer.forwardpass" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>activations</strong> – Activations from previous layer/input | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.in_nodes</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Activations after one forward pass through this layer | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.FullyConnectedLayer.gradient_relu_of_X">
+<code class="sig-name descname">gradient_relu_of_X</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">delta</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer.gradient_relu_of_X" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – Output from next layer/input | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p></li>
+<li><p><strong>delta</strong> – del_Error/ del_activation_curr | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Current del_Error to pass to current layer in backward pass through relu layer | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">This</span> <span class="n">will</span> <span class="n">only</span> <span class="n">be</span> <span class="n">called</span> <span class="k">for</span> <span class="n">layers</span> <span class="k">with</span> <span class="n">activation</span> <span class="n">relu</span> <span class="n">amd</span> <span class="n">during</span> <span class="n">backwardpass</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.FullyConnectedLayer.gradient_softmax_of_X">
+<code class="sig-name descname">gradient_softmax_of_X</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">delta</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer.gradient_softmax_of_X" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Output from next layer/input | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p></li>
+<li><p><strong>delta</strong> – <code class="docutils literal notranslate"><span class="pre">del_Error/</span> <span class="pre">del_activation_curr</span></code> | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Current del_Error to pass to current layer in backward pass through softmax layer | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">This</span> <span class="n">will</span> <span class="n">only</span> <span class="n">be</span> <span class="n">called</span> <span class="k">for</span> <span class="n">layers</span> <span class="k">with</span> <span class="n">activation</span> <span class="n">softmax</span> <span class="n">amd</span> <span class="n">during</span> <span class="n">backwardpass</span>
+<span class="n">Hint</span><span class="p">:</span> <span class="n">You</span> <span class="n">might</span> <span class="n">need</span> <span class="n">to</span> <span class="n">compute</span> <span class="n">Jacobian</span> <span class="n">first</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.FullyConnectedLayer.relu_of_X">
+<code class="sig-name descname">relu_of_X</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer.relu_of_X" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> – Output from current layer/input for Activation | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Activations after one forward pass through this relu layer | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">This</span> <span class="n">will</span> <span class="n">only</span> <span class="n">be</span> <span class="n">called</span> <span class="k">for</span> <span class="n">layers</span> <span class="k">with</span> <span class="n">activation</span> <span class="n">relu</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.FullyConnectedLayer.softmax_of_X">
+<code class="sig-name descname">softmax_of_X</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer.softmax_of_X" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – Output from current layer/input for Activation | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Activations after one forward pass through this softmax layer | <code class="docutils literal notranslate"><span class="pre">shape:</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">self.out_nodes</span></code></p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.FullyConnectedLayer.updateWeights">
+<code class="sig-name descname">updateWeights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.FullyConnectedLayer.updateWeights" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lr</strong> – Learning rate being used</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="scripts.nn.NeuralNetwork">
+<em class="property">class </em><code class="sig-prename descclassname">scripts.nn.</code><code class="sig-name descname">NeuralNetwork</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">batchSize</span></em>, <em class="sig-param"><span class="n">epochs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Neural network implementating class methods.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nn1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NeuralNetwork</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nn1</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">FullyConnectedLayer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nn1</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">FullyConnectedLayer</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Initializes a Neural Network Object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>lr: learning rate</p>
+</dd>
+<dt class="field-even">Param</dt>
+<dd class="field-even"><p>batchSize: Mini batch size</p>
+</dd>
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>epochs: Number of epochs for training</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<dl class="py method">
+<dt id="scripts.nn.NeuralNetwork.addLayer">
+<code class="sig-name descname">addLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork.addLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to add layers to the Neural Network</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.NeuralNetwork.computeAccuracy">
+<code class="sig-name descname">computeAccuracy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">predictions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork.computeAccuracy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The accuracy given the true labels Y and final output of the model</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.NeuralNetwork.crossEntropyDelta">
+<code class="sig-name descname">crossEntropyDelta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">predictions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork.crossEntropyDelta" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Y</strong> – Ground truth labels (encoded as 1-hot vectors) | <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">output</span> <span class="pre">labels</span></code></p></li>
+<li><p><strong>predictions</strong> – Predictions of the model | <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">output</span> <span class="pre">labels</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Returns the derivative of the loss with respect to the last layer outputs, ie <code class="docutils literal notranslate"><span class="pre">dL/dp_i</span></code> where <code class="docutils literal notranslate"><span class="pre">p_i</span></code> is the ith output of the last layer of the network | <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">output</span> <span class="pre">labels</span></code></p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.NeuralNetwork.crossEntropyLoss">
+<code class="sig-name descname">crossEntropyLoss</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">predictions</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork.crossEntropyLoss" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Y</strong> – Ground truth labels (encoded as 1-hot vectors) | <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">output</span> <span class="pre">labels</span></code></p></li>
+<li><p><strong>predictions</strong> – Predictions of the model | <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">batchSize</span> <span class="pre">x</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">output</span> <span class="pre">labels</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>The cross-entropy loss between the predictions and the ground truth labels | <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">scalar</span></code></p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.NeuralNetwork.predict">
+<code class="sig-name descname">predict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork.predict" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>X : Current Batch of Input Data as an nparray</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>The predictions made by the model (which are the activations output by the last layer)</p>
+</dd>
+</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Note</span><span class="p">:</span> <span class="n">Activations</span> <span class="n">at</span> <span class="n">the</span> <span class="n">first</span> <span class="n">layer</span><span class="p">(</span><span class="nb">input</span> <span class="n">layer</span><span class="p">)</span> <span class="ow">is</span> <span class="n">X</span> <span class="n">itself</span>
+</pre></div>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.NeuralNetwork.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trainX</span></em>, <em class="sig-param"><span class="n">trainY</span></em>, <em class="sig-param"><span class="n">validX</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">validY</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork.train" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trainX</strong> – A list of training input data to the neural network</p></li>
+<li><p><strong>trainY</strong> – Corresponding list of training data labels</p></li>
+<li><p><strong>validX</strong> – A list of validation input data to the neural network</p></li>
+<li><p><strong>validY</strong> – Corresponding list of validation data labels</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Loss gradient</p>
+</dd>
+</dl>
+<p>We run the following training algorithm for epoch number of times</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>Divide the data into batches</dt><dd><p><code class="docutils literal notranslate"><span class="pre">trainX[i*batchSize:i*batchSize+batchSize]</span></code></p>
+</dd>
+</dl>
+</li>
+<li><p>For each batch run the <code class="docutils literal notranslate"><span class="pre">forwardpass()</span></code> for the network</p></li>
+<li><p>Now calculate the loss and use the <code class="docutils literal notranslate"><span class="pre">backpropogate()</span></code> function</p></li>
+<li><p>Update weights</p></li>
+</ol>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="scripts.nn.NeuralNetwork.validate">
+<code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">validX</span></em>, <em class="sig-param"><span class="n">validY</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.nn.NeuralNetwork.validate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>validX : Validation Input Data</p>
+</dd>
+<dt class="field-even">Param</dt>
+<dd class="field-even"><p>validY : Validation Labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>The predictions and validation accuracy evaluated over the current neural network model</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Roadcare visulisation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main.html">XOR and MNIST program</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Neural network implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="add_intermediate_points.html">XOR and MNIST progrdm</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="main.html" title="previous chapter">XOR and MNIST program</a></li>
+      <li>Next: <a href="add_intermediate_points.html" title="next chapter">XOR and MNIST progrdm</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Kartavya kothari.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/nn.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

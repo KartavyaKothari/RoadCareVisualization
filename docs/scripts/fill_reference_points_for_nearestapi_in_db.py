@@ -1,7 +1,6 @@
 import os,django
 import json
 
-from RoadMapView.models import RoadData,RoadPoint
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.contrib.gis.geos import MultiPoint

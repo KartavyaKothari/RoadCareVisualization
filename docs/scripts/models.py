@@ -2,7 +2,7 @@ from django.contrib.gis.db import models
 from django.contrib.gis.geos import MultiPoint
 
 
-class RoadData(models.Model):
+class RoadData():
     multipoint = models.MultiPointField()
     osm_id = models.CharField(max_length=120)
 
@@ -11,7 +11,7 @@ class RoadData(models.Model):
     def __str__(self):
         return str(self.osm_id)
 
-class RoadPothole(models.Model):
+class RoadPothole():
     point = models.PointField()
     rating = models.FloatField()
     bearing = models.FloatField()
@@ -19,7 +19,7 @@ class RoadPothole(models.Model):
     def __str__(self):
         return "lat: "+str(self.point.x)+", lng: "+str(self.point.y)+", rating: "+str(self.rating)+", bearing: "+str(self.bearing)
 
-class RoadPothole_snapped(models.Model):
+class RoadPothole_snapped():
     point = models.PointField()
     rating = models.FloatField()
     bearing = models.FloatField()
@@ -28,9 +28,9 @@ class RoadPothole_snapped(models.Model):
     def __str__(self):
         return "lat: "+str(self.point.x)+", lng: "+str(self.point.y)+", rating: "+str(self.rating)+", bearing: "+str(self.bearing)
     
-class RoadPoint(models.Model):
+class RoadPoint():
     point = models.PointField()
-    roaddata = models.ForeignKey(RoadData,on_delete=models.CASCADE)
+    # roaddata = models.ForeignKey(RoadData,on_delete=models.CASCADE)
     bearing = models.FloatField()
     sequence_number = models.IntegerField()
 

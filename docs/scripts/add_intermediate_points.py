@@ -17,25 +17,11 @@ def bearing_tuple(t1,t2):
     brng = math.degrees(math.atan2(y, x))
     return brng
 
-# def get_bearing(lat1, lat2, long1, long2):
-#     brng = Geodesic.WGS84.Inverse(lat1, long1, lat2, long2)['azi1']
-#     return brng
 
 def getNextPoint(t1,bearing):
-    # # Define a general distance object, initialized with a distance of 1 km.
-    # d = geopy.distance.VincentyDistance(meters = min_distance_in_m)
-    # # Use the `destination` method with a bearing of 0 degrees (which is north)
-    # # in order to go from point `start` 1 km to north.
-    # bearing = bearing*((22/7)/180)
-
-    # return d.destination(point=t1, bearing=bearing)
-    # return distance.distance(meters=min_distance_in_m).destination(t1,bearing) 
     R = 6371 #Radius of the Earth
     brng = math.radians(bearing) #Bearing is 90 degrees converted to radians.
     d = min_distance_in_m/1000 #Distance in km
-
-    #lat2  52.20444 - the lat result I'm hoping for
-    #lon2  0.36056 - the long result I'm hoping for.
 
     lat1 = math.radians(t1.latitude) #Current lat point converted to radians
     lon1 = math.radians(t1.longitude) #Current long point converted to radians
@@ -104,10 +90,10 @@ def run():
                     })
                 for i in range(int(distance/min_distance_in_m -1) ):
                     np = getNextPoint(np,bearing)\
-                    payload['latlongs'].append({
-                        "lat":np.latitude,
-                        "lng": np.longitude
-                    })
+                    # payload['latlongs'].append({
+                    #     "lat":np.latitude,
+                    #     "lng": np.longitude
+                    # })
             payload['latlongs'].append({
                     "lat":curr.latitude,
                     "lng":curr.longitude

@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XOR and MNIST program &#8212; Roadcare visulisation  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Neural network implementation" href="nn.html" />
+    <link rel="prev" title="Welcome to Codigos’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-scripts.main">
+<span id="xor-and-mnist-program"></span><h1>XOR and MNIST program<a class="headerlink" href="#module-scripts.main" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="scripts.main.loadMnist">
+<code class="sig-prename descclassname">scripts.main.</code><code class="sig-name descname">loadMnist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scripts.main.loadMnist" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li><p>MNIST dataset has 50k train, 10k val, 10k test</p></li>
+<li><p>The test labels have not been provided for this task</p></li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="scripts.main.loadXor">
+<code class="sig-prename descclassname">scripts.main.</code><code class="sig-name descname">loadXor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scripts.main.loadXor" title="Permalink to this definition">¶</a></dt>
+<dd><ul class="simple">
+<li><p>This is a toy dataset with 10k points and 2 labels.</p></li>
+<li><p>The output can represented as the XOR of the input as described in the problem statement</p></li>
+<li><p>There are 7k training points, 1k validation points and 2k test points</p></li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="scripts.main.oneHotEncodeY">
+<code class="sig-prename descclassname">scripts.main.</code><code class="sig-name descname">oneHotEncodeY</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Y</span></em>, <em class="sig-param"><span class="n">nb_classes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.main.oneHotEncodeY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates one-hot encoding for a given list of labels
+:param Input:- Y : An integer or a list of labels
+:rtype: Output:- Coreesponding one hot encoded vector or the list of one-hot encoded vectors</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="scripts.main.preprocessMnist">
+<code class="sig-prename descclassname">scripts.main.</code><code class="sig-name descname">preprocessMnist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#scripts.main.preprocessMnist" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Input</strong> – A 2-d numpy array containing an entire train, val or test split | <code class="docutils literal notranslate"><span class="pre">Shape:</span> <span class="pre">n</span> <span class="pre">x</span> <span class="pre">28*28</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>A 2-d numpy array of the same shape as the input (If the size is changed, you will get downstream errors)</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="scripts.main.taskMnist">
+<code class="sig-prename descclassname">scripts.main.</code><code class="sig-name descname">taskMnist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scripts.main.taskMnist" title="Permalink to this definition">¶</a></dt>
+<dd><ol class="arabic">
+<li><p>Create a NeuralNetwork object with optimal parameters.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nn1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NeuralNetwork</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">batchSize</span><span class="p">,</span> <span class="n">epochs</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Add layers to neural network corresponding to inputs and outputs of given data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nn1</span><span class="o">.</span><span class="n">addLayer</span><span class="p">(</span><span class="n">FullyConnectedLayer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">nn1</span> <span class="pre">=</span> <span class="pre">nn.NeuralNetwork(0.025,</span> <span class="pre">13,</span> <span class="pre">50)</span></code>
+<code class="docutils literal notranslate"><span class="pre">nn1.addLayer(nn.FullyConnectedLayer(784,30,'relu'))</span></code>
+|</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="scripts.main.taskXor">
+<code class="sig-prename descclassname">scripts.main.</code><code class="sig-name descname">taskXor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scripts.main.taskXor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a NeuralNetwork object with optimal parameters.</p>
+<ol class="arabic simple">
+<li><p>epoch - number of iterations</p></li>
+<li><p>LR - Learning rate for the training</p></li>
+<li><p>Batch size for training</p></li>
+</ol>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Roadcare visulisation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">XOR and MNIST program</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nn.html">Neural network implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="add_intermediate_points.html">XOR and MNIST progrdm</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Codigos’s documentation!</a></li>
+      <li>Next: <a href="nn.html" title="next chapter">Neural network implementation</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Kartavya kothari.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/main.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

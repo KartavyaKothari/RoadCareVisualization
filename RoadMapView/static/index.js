@@ -37,6 +37,12 @@ function erase_bounding_box(){
         boxes = []
 }
 
+function getColorFromRating(rating){
+    if(rating>2)return "#1d9914"
+    if(rating>1)return "#eb7434"
+    if(rating>0)return "#f00"
+}
+
 function activate_bounding_box(){
     if(!show_bounding_box){
         document.getElementById('bb_show').innerText = 'Erase bounding box'
@@ -194,12 +200,12 @@ function get_pothole_data_for(map,bbox){
         response['list'].forEach(myFunction);
         function myFunction(item,index){
             if(index%skipPoints==0){
-                color = "#00f"
+                color = getColorFromRating(item['rating'])
                 // console.log(item)
                 // {lat: 72.90909269756398, lng: 19.125626230321046}
                 // { lat: 19.133050, lng: 72.913381 }
                 marker = new google.maps.Marker({
-                    position: item,
+                    position: item['pot_loc'],
                     map: map,
                     // icon: icons['parking'].icon
                     icon: {

@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>models.py &#8212; Roadcare visulisation  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="get_last_7_days_pothole_data.py" href="get_last_7_days_pothole_data.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-scripts.models">
+<span id="models-py"></span><h1>models.py<a class="headerlink" href="#module-scripts.models" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="scripts.models.RoadData">
+<em class="property">class </em><code class="sig-prename descclassname">scripts.models.</code><code class="sig-name descname">RoadData</code><a class="headerlink" href="#scripts.models.RoadData" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="scripts.models.RoadData.multipoint">
+<code class="sig-name descname">multipoint</code><em class="property"> = &lt;django.contrib.gis.db.models.fields.MultiPointField&gt;</em><a class="headerlink" href="#scripts.models.RoadData.multipoint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadData.osm_id">
+<code class="sig-name descname">osm_id</code><em class="property"> = &lt;django.db.models.fields.CharField&gt;</em><a class="headerlink" href="#scripts.models.RoadData.osm_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="scripts.models.RoadData.road_len">
+<code class="sig-name descname">road_len</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scripts.models.RoadData.road_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="scripts.models.RoadPoint">
+<em class="property">class </em><code class="sig-prename descclassname">scripts.models.</code><code class="sig-name descname">RoadPoint</code><a class="headerlink" href="#scripts.models.RoadPoint" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="scripts.models.RoadPoint.bearing">
+<code class="sig-name descname">bearing</code><em class="property"> = &lt;django.db.models.fields.FloatField&gt;</em><a class="headerlink" href="#scripts.models.RoadPoint.bearing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadPoint.point">
+<code class="sig-name descname">point</code><em class="property"> = &lt;django.contrib.gis.db.models.fields.PointField&gt;</em><a class="headerlink" href="#scripts.models.RoadPoint.point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadPoint.sequence_number">
+<code class="sig-name descname">sequence_number</code><em class="property"> = &lt;django.db.models.fields.IntegerField&gt;</em><a class="headerlink" href="#scripts.models.RoadPoint.sequence_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="scripts.models.RoadPothole">
+<em class="property">class </em><code class="sig-prename descclassname">scripts.models.</code><code class="sig-name descname">RoadPothole</code><a class="headerlink" href="#scripts.models.RoadPothole" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="scripts.models.RoadPothole.bearing">
+<code class="sig-name descname">bearing</code><em class="property"> = &lt;django.db.models.fields.FloatField&gt;</em><a class="headerlink" href="#scripts.models.RoadPothole.bearing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadPothole.point">
+<code class="sig-name descname">point</code><em class="property"> = &lt;django.contrib.gis.db.models.fields.PointField&gt;</em><a class="headerlink" href="#scripts.models.RoadPothole.point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadPothole.rating">
+<code class="sig-name descname">rating</code><em class="property"> = &lt;django.db.models.fields.FloatField&gt;</em><a class="headerlink" href="#scripts.models.RoadPothole.rating" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="scripts.models.RoadPothole_snapped">
+<em class="property">class </em><code class="sig-prename descclassname">scripts.models.</code><code class="sig-name descname">RoadPothole_snapped</code><a class="headerlink" href="#scripts.models.RoadPothole_snapped" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt id="scripts.models.RoadPothole_snapped.bearing">
+<code class="sig-name descname">bearing</code><em class="property"> = &lt;django.db.models.fields.FloatField&gt;</em><a class="headerlink" href="#scripts.models.RoadPothole_snapped.bearing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadPothole_snapped.point">
+<code class="sig-name descname">point</code><em class="property"> = &lt;django.contrib.gis.db.models.fields.PointField&gt;</em><a class="headerlink" href="#scripts.models.RoadPothole_snapped.point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadPothole_snapped.rating">
+<code class="sig-name descname">rating</code><em class="property"> = &lt;django.db.models.fields.FloatField&gt;</em><a class="headerlink" href="#scripts.models.RoadPothole_snapped.rating" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="scripts.models.RoadPothole_snapped.total_potholes">
+<code class="sig-name descname">total_potholes</code><em class="property"> = &lt;django.db.models.fields.IntegerField&gt;</em><a class="headerlink" href="#scripts.models.RoadPothole_snapped.total_potholes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Roadcare visulisation</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="add_intermediate_points.html">add_intermediate_points.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apply_snaptoroad_api_on_pothole.html">apply_snaptoroad_api_on_pothole.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bounded_10m_points.html">bounded_10m_points.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fill_osm_roaddata_in_db.html">fill_osm_roaddata_in_db.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fill_pothole_data_in_db.html">fill_pothole_data_in_db.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fill_reference_points_for_nearestapi_in_db.html">fill_reference_points_for_nearestapi_in_db.py</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_last_7_days_pothole_data.html">get_last_7_days_pothole_data.py</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">models.py</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="get_last_7_days_pothole_data.html" title="previous chapter">get_last_7_days_pothole_data.py</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Kartavya kothari.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/models.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
