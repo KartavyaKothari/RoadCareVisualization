@@ -5,6 +5,8 @@ from geopy import distance
 import geopy
 import math
 
+# from django.db.transaction import commit_on_success
+
 min_distance_in_m = 10
 
 def bearing_tuple(t1,t2):

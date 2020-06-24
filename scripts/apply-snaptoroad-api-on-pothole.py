@@ -10,12 +10,17 @@ from django.contrib.gis.geos import Polygon
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 
+# from django.db.transaction import commit_on_success
+from django.db import transaction
+
 import time
 import numpy as np
 
+
+@transaction.atomic
 def run():
     # Delete previous data
-    # RoadPothole_snapped.objects.all().delete()
+    RoadPothole_snapped.objects.all().delete()
     rp=RoadPothole.objects.all()
 
     # Seetting the nearest road api
@@ -23,23 +28,23 @@ def run():
     time_req = []
 
     for r in rp:
-        # output_pt=None
+        output_pt=None
         input_pt = Point(r.point.x,r.point.y)
 
         start_time = time.time()
         matched_points = RoadPoint.objects.filter(point__distance_lt=(input_pt,D(m=search_distance)))
         time_req.append(time.time()-start_time)
-        # if len(matched_points) != 0:
-        #     output_pt = matched_points[0].point
+        if len(matched_points) != 0:
+            output_pt = matched_points[0].point
         
-        #     if RoadPothole_snapped.objects.filter(point=output_pt).exists():
-        #         pothole = RoadPothole_snapped.objects.get(point=output_pt)
-        #         pothole.rating = (pothole.rating*pothole.total_potholes+r.rating)/(pothole.total_potholes+1)
-        #         pothole.total_potholes = pothole.total_potholes+1
-        #     else:
-        #         pothole = RoadPothole_snapped(point=output_pt,rating=r.rating,bearing=r.bearing,total_potholes=1)
+            if RoadPothole_snapped.objects.filter(point=output_pt).exists():
+                pothole = RoadPothole_snapped.objects.get(point=output_pt)
+                pothole.rating = (pothole.rating*pothole.total_potholes+r.rating)/(pothole.total_potholes+1)
+                pothole.total_potholes = pothole.total_potholes+1
+            else:
+                pothole = RoadPothole_snapped(point=output_pt,rating=r.rating,bearing=r.bearing,total_potholes=1)
             
-        #     pothole.save()
+            pothole.save()
     
     print(len(RoadPothole_snapped.objects.all()))
     time_req = np.array(time_req)

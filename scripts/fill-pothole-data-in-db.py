@@ -10,6 +10,9 @@ from django.contrib.gis.geos import Polygon
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 
+# from django.db.transaction import commit_on_success
+from django.db import transaction
+
 def getRating(data_t):
     a = data_t['p_bad']
     b = data_t['p_medium']
@@ -26,6 +29,7 @@ def getRating(data_t):
         else:
             return 3 
 
+@transaction.atomic
 def run():
     # Delete previous data
     RoadPothole.objects.all().delete()

@@ -7,6 +7,9 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.geos import MultiPoint
 import math
 
+# from django.db.transaction import commit_on_success
+from django.db import transaction
+
 content = ""
 
 def bearing_tuple(t1,t2):
@@ -24,6 +27,7 @@ def bearing_tuple(t1,t2):
     brng = (math.degrees(math.atan2(y, x)) + 360) %360
     return brng
 
+@transaction.atomic
 def run():
     
     RoadPoint.objects.all().delete()
