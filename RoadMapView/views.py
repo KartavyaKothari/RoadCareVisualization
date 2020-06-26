@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.generic import TemplateView
-from .models import RoadData,RoadPoint,RoadPothole,RoadPothole_snapped
+from .models import RoadData,RoadPothole,RoadData_snapped
 import json
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
@@ -48,7 +48,7 @@ def nearest_road(request):
     iterations = int((end_distance-start_distance) / start_distance)
     
     for i in range(1,iterations+1):
-        matched_points = RoadPoint.objects.filter(point__distance_lt=(input_pt,D(m=start_distance*i))).annotate(distance=Distance('point',input_pt)).order_by("distance")
+        matched_points = RoadData.objects.filter(center__distance_lt=(input_pt,D(m=start_distance*i))).annotate(distance=Distance('center',input_pt)).order_by("distance")
         print("Distance " + str(start_distance *i))
 
         if len(matched_points) != 0:
@@ -58,8 +58,8 @@ def nearest_road(request):
             print(output_pt)
             break
     op = {
-        "lat":output_pt.point.y,
-        "lng":output_pt.point.x,
+        "lat":output_pt.center.y,
+        "lng":output_pt.center.x,
         "bearing":output_pt.bearing
     }
     print(json.dumps(op))
@@ -92,6 +92,44 @@ def binarySearchwithTolerance(arr, x,t):
     return None
 
 
+def get_raw_potholes(request):
+    message = {'err':"some error"}
+
+    if request.method == 'POST':
+        bbox = request.POST.getlist('bounds[]')
+        print(bbox)
+
+        bbox = (bbox[0],bbox[1],bbox[2],bbox[3])
+
+        geom = Polygon.from_bbox(bbox)
+
+        # print("Geom ", geom[0][0][0])
+        box = [{'lat':geom[0][0][1],
+                'lng':geom[0][0][0]},
+                {'lat':geom[0][1][1],
+                'lng':geom[0][1][0]},
+                {'lat':geom[0][2][1],
+                'lng':geom[0][2][0]},
+                {'lat':geom[0][3][1],
+                'lng':geom[0][3][0]},
+                {'lat':geom[0][0][1],
+                'lng':geom[0][0][0]}
+                ]
+
+        rp = RoadPothole.objects.filter(point__within=geom).distinct('point')
+        print("count :",rp.count())
+        all_pothole_data = []
+
+        for r in rp:
+            temp = {}
+            temp['pot_loc'] = { 'lat' : r.point.y , 'lng' : r.point.x }
+            temp['rating'] = r.rating
+            all_pothole_data.append(temp)
+
+        message = {'list': all_pothole_data,'geom':box}
+
+    return JsonResponse(message)
+
 def get_potholes_from_db(request):
     message = {'err':"some error"}
 
@@ -116,19 +154,40 @@ def get_potholes_from_db(request):
                 'lng':geom[0][0][0]}
                 ]
 
-        rp = RoadPothole_snapped.objects.filter(point__within=geom).distinct('point')
-        print("count :",rp.count())
-        all_pothole_data = []
+    # rd = RoadData.objects.all()
+        rd = RoadData_snapped.objects.filter(Q(multipoint__within=geom)|Q(multipoint__intersects=geom))
+        print("count :",rd.count())
+        all_road_data = []
 
-        for r in rp:
-            temp = {}
-            temp['pot_loc'] = { 'lat' : r.point.y , 'lng' : r.point.x }
-            temp['rating'] = r.rating
-            all_pothole_data.append(temp)
+        for r in rd:
+            temp={}
+            temp['id']=r.osm_id
+            temp['latlongs']=[]
+            temp['rating']=r.rating
+            for ll in r.multipoint:
+                temp['latlongs'].append({
+                    "lat":ll.y,
+                    "lng":ll.x
+                })
+            all_road_data.append(temp)
 
-        message = {'list': all_pothole_data,'geom':box}
+        message = {'list': all_road_data,'geom':box}
 
     return JsonResponse(message)
+
+    #     rp = RoadData_snapped.objects.filter(center__within=geom).distinct('point')
+    #     print("count :",rp.count())
+    #     all_pothole_data = []
+
+    #     for r in rp:
+    #         temp = {}
+    #         temp['pot_loc'] = { 'lat' : r.point.y , 'lng' : r.point.x }
+    #         temp['rating'] = r.rating
+    #         all_pothole_data.append(temp)
+
+    #     message = {'list': all_pothole_data,'geom':box}
+
+    # return JsonResponse(message)
 
 def get_roads_from_db(request):
     message = "Some error"

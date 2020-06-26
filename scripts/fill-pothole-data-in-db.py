@@ -1,7 +1,7 @@
 import os,django
 import json
 
-from RoadMapView.models import RoadPothole,RoadPoint,RoadPothole_snapped
+from RoadMapView.models import RoadPothole
 from django.contrib.gis.geos import Point
 from datetime import datetime, timedelta
 import pandas as pd
@@ -34,12 +34,13 @@ def run():
     # Delete previous data
     RoadPothole.objects.all().delete()
 
-    last_one_week_data = pd.read_json('tmp/last_one_week_data.json')
+    last_one_week_data = pd.read_json('tmp/iit_data.json')
 
     for row in last_one_week_data.iterrows():
         # print(row[0])
         rating = getRating(row[1])
         # print(rating)
+        # if not RoadPothole.objects.filter(point=Point(row[1]['lng'],row[1]['lat'])).exists():
         pothole = RoadPothole(point=Point(row[1]['lng'],row[1]['lat']),rating=rating,bearing=row[1]['bearing'])
         pothole.save()
         

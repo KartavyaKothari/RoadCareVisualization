@@ -1,92 +1,133 @@
-var debugs = []
-var reds = []
-var greens = []
-var map;
-var markers = []
-var counter = 0
+const ALL_CLEAR = 0;
+const RAW_POTHOLES = 1;
+const RAW_ROADS = 2;
+const SNAPPED_ROAD = 3;
 var TIME_OUT_DEBUG = 0;
-var potholes = []
-var boxes = []
-var show_road = false;
-var show_bounding_box = false;
+
+var map;
 var lastBox;
 
-function see_road(){
-    show_road = true;
-    clear_all_road_and_pothole()
-    get_map_data_for(map,bbox)
-    var temp = show_bounding_box
-    erase_bounding_box()
-    show_bounding_box = temp
-}
-function see_pothole(){
-    show_road = false;
-    clear_all_road_and_pothole()
-    get_pothole_data_for(map,bbox)
-    var temp = show_bounding_box
-    erase_bounding_box()
-    show_bounding_box = temp
+var markers = []
+var potholes = []
+var boxes = []
+var road_segs = []
+
+var show_bounding_box = false;
+var whatToShow = ALL_CLEAR;
+
+
+function getColorFromRating(rating){
+    if(rating==3)return "#00ff00" //green "#008a0b"
+    if(rating<3 && rating>2) return "#00a0ff" //blue
+    if(rating==2)return "#fe9700" //orange
+    if(rating<2 && rating>1) return "#ff0000" //red
+    if(rating<=1)return "#000000" //black
+
+    // if(rating==3)return "#007811"
+    // if(rating<3 && rating>2) return "#b4ce7a"
+    // if(rating==2)return "#b6873c"
+    // if(rating<2 && rating>1) return "#c56b30"
+    // if(rating<=1)return "#ff0000"
 }
 
 function erase_bounding_box(){
-    show_bounding_box = false;
-
     for(var box in boxes)
         boxes[box].setMap(null);
     
-        boxes = []
+    boxes = []
 }
 
-function getColorFromRating(rating){
-    if(rating>2)return "#1d9914"
-    if(rating>1)return "#eb7434"
-    if(rating>0)return "#f00"
-}
-
-function activate_bounding_box(){
-    if(!show_bounding_box){
-        document.getElementById('bb_show').innerText = 'Erase bounding box'
-        see_bounding_box(lastBox)
-        show_bounding_box = true
-    } else {
-        document.getElementById('bb_show').innerText = 'Show bounding box'
-        erase_bounding_box()
-        show_bounding_box = false
+function clear_roads(){
+    for (var road in road_segs) {
+        road_segs[road].setMap(null)
     }
-    // show_bounding_box = !show_bounding_box;
+    road_segs = []
 }
 
-function see_bounding_box(r){
-    var flightPath = new google.maps.Polyline({
-        path:r,
-        geodesic: true,
-        strokeColor: '#000', //change color for every line
-        strokeOpacity: 1.0,
-        strokeWeight: 5
-    })
-
-    boxes.push(flightPath);
-
-    flightPath.setMap(map);
-}
-
-function clear_all_road_and_pothole(){
-    for (var line in reds) {
-        reds[line].setMap(null)
-    }
-    reds = []
-
+function clear_potholes(){
     for (var hole in potholes){
         potholes[hole].setMap(null)
     }
     potholes = []
+}
 
+function clear_all(){
+    clear_roads()
+    clear_potholes()
+    erase_bounding_box()
     console.log("all clear")
+}
+
+function see_bounding_box(box){
+    var bounding_box = new google.maps.Polyline({
+        path:box,
+        geodesic: true,
+        strokeColor: '#000',
+        strokeOpacity: 1.0,
+        strokeWeight: 5
+    })
+
+    boxes.push(bounding_box);
+    bounding_box.setMap(map);
+}
+
+function toggle_bounding_box(){
+    if(!show_bounding_box){
+        // TIME_OUT_DEBUG = 2000
+        see_bounding_box(lastBox)
+        show_bounding_box = true
+    } else {
+        // TIME_OUT_DEBUG = 0   
+        erase_bounding_box()
+        show_bounding_box = false
+    }
+}
+
+function see_raw_roads(){
+    whatToShow = RAW_ROADS
+    bbox = getBoundingBox()
+    get_map_data_for(map,bbox)
+}
+
+function see_raw_potholes(){
+    whatToShow = RAW_POTHOLES
+    bbox = getBoundingBox()
+    get_raw_potholes(map,bbox)
+}
+
+function see_road_quality(){
+    whatToShow = SNAPPED_ROAD
+    bbox = getBoundingBox()
+    get_pothole_data_for(map,bbox)
+}
+
+function see_nothing(){
+    whatToShow = ALL_CLEAR
+    clear_all()
+}
+
+function getBoundingBox(){
+    ne_lng=map.getBounds().getNorthEast().lng()
+    ne_lat=map.getBounds().getNorthEast().lat()
+    sw_lng=map.getBounds().getSouthWest().lng()
+    sw_lat=map.getBounds().getSouthWest().lat()
+
+    ne = [ne_lat, ne_lng]
+    sw = [sw_lat, sw_lng]
+
+    xmin=sw[1]
+    ymin=sw[0]
+    xmax=ne[1]
+    ymax=ne[0]
+
+    bbox = [xmin, ymin, xmax, ymax]
+
+    return bbox
 }
 
 function initMap() {
     var iit_location = {lat: 19.124910138009756, lng: 72.91621232284234};
-    // console.log(somepoints)
+    
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 19,
         center: iit_location,
@@ -94,15 +135,52 @@ function initMap() {
     });
 
     var centerControlDiv = document.createElement('div');
-    var centerControl = new CenterControl(centerControlDiv, map);
-
+    var centerControl = new CenterControl(centerControlDiv, map, "Clear all");
     centerControlDiv.index = 1;
-    map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
-    
-    color_red = 0xFF0000
-    color_blue = 0x0000FF
-    color_green = 0x00FF00
+    centerControlDiv.addEventListener('click', function () {
+        see_nothing()
+    });
+    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(centerControlDiv);
 
+    var centerControlDiv2 = document.createElement('div');
+    var centerControl2 = new CenterControl(centerControlDiv2, map, "Show road quality");
+    centerControlDiv2.index = 2;
+    centerControlDiv2.addEventListener('click', function () {
+        see_road_quality()
+    });
+    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(centerControlDiv2);
+
+    var centerControlDiv3 = document.createElement('div');
+    var centerControl3 = new CenterControl(centerControlDiv3, map, "Show predictions");
+    centerControlDiv3.index = 3;
+    centerControlDiv3.addEventListener('click', function () {
+        see_raw_potholes()
+    });
+    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(centerControlDiv3);
+
+    var centerControlDiv4 = document.createElement('div');
+    var centerControl4 = new CenterControl(centerControlDiv4, map, "Show roads");
+    centerControlDiv4.index = 4;
+    centerControlDiv4.addEventListener('click', function () {
+        see_raw_roads()
+    });
+    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(centerControlDiv4);
+
+    var centerControlDiv5 = document.createElement('div');
+    var centerControl5 = new CenterControl(centerControlDiv5, map, "Toggle bounding box");
+    centerControlDiv5.index = 5;
+    centerControlDiv5.addEventListener('click', function () {
+        toggle_bounding_box()
+    });
+    map.controls[google.maps.ControlPosition.LEFT_CENTER].push(centerControlDiv5);
+
+    // var centerControlDiv56 = document.createElement('div');
+    // var centerControl6 = new CenterControl(centerControlDiv6, map, <img src="{% load static 'legen.png' %}"></img>);
+    // centerControlDiv6.index = 6;
+    // centerControlDiv6.addEventListener('click', function () {
+    //     toggle_bounding_box()
+    // });
+    // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv6);
 
     google.maps.event.addListener(map, 'click', function (event) {
         console.log(event.latLng.toJSON())
@@ -110,40 +188,33 @@ function initMap() {
     });
 
     google.maps.event.addListener(map, 'idle', function (event) {
-    
-        console.log(map.getBounds().getNorthEast().lng())
-        // console.log(event.latLng.toJSON())
-        ne_lng=map.getBounds().getNorthEast().lng()
-        ne_lat=map.getBounds().getNorthEast().lat()
-
-        sw_lng=map.getBounds().getSouthWest().lng()
-        sw_lat=map.getBounds().getSouthWest().lat()
-
-        ne = [ne_lat, ne_lng]
-        sw = [sw_lat, sw_lng]
-
-        xmin=sw[1]
-        ymin=sw[0]
-        xmax=ne[1]
-        ymax=ne[0]
-
-        bbox = [xmin, ymin, xmax, ymax]
+        bbox = getBoundingBox()
 
         console.log(bbox)
 
-        clear_all_road_and_pothole()
+        clear_all()
 
         window.setTimeout(function(){
-            if(show_road)
-                get_map_data_for(map,bbox)
-            else get_pothole_data_for(map,bbox)
+            switch(whatToShow) {
+                case ALL_CLEAR:
+                    clear_all()
+                    break;
+                case RAW_POTHOLES:
+                    get_raw_potholes(map,bbox)
+                    break;
+                case RAW_ROADS:
+                    get_map_data_for(map,bbox)
+                    break;
+                case SNAPPED_ROAD:
+                    get_pothole_data_for(map,bbox)
+                    break;
+                default:
+                    clear_all()
+            }
         },TIME_OUT_DEBUG)
     });
 
-    // Adds a marker to the map.
     function addMarker(location, map) {
-        // Add the marker at the clicked location, and add the next-available label
-        // from the array of alphabetical characters.
         if (markers.length == 0) {
             counter = 0
         }
@@ -167,20 +238,64 @@ function initMap() {
                     draggable: true
                 });
                 markers.push(marker_changed)
-                // alert( lat);
             }
         };
 
         xhttp.open("GET", "nearest_road?lat= " + location.lat() + "&lng=" + location.lng(), true);
-
         xhttp.send();
     }
 }
 
-
 function get_pothole_data_for(map,bbox){
     $.ajax({
         url: '/road_data/show/get_potholes_from_db',
+        data: {
+          'csrfmiddlewaretoken': csrf_token,
+            'bounds[]':bbox
+      },
+        type: 'POST'
+      }).done(function(response){
+        console.log(response['list']);
+
+        lastBox = response['geom'];
+
+        if(show_bounding_box)
+            see_bounding_box(lastBox)
+        
+        all_road_10m_min_distance = response['list']
+
+        for (var points in all_road_10m_min_distance) {
+            var seg = new google.maps.Polyline({
+                path:
+                    [all_road_10m_min_distance[points]['latlongs'][0],
+                    all_road_10m_min_distance[points]['latlongs'][1]]
+                ,
+                geodesic: true,
+                strokeColor: getColorFromRating(all_road_10m_min_distance[points]['rating']),
+                strokeOpacity: 1.0,
+                strokeWeight: 5
+            });
+            seg.idfromopenstreet = all_road_10m_min_distance[points]["id"]
+            seg.addListener("click", function () {
+                var infowindow = new google.maps.InfoWindow({
+                    content: this.idfromopenstreet.toString()
+                });
+                infowindow.setPosition(this.midLatLang);
+                infowindow.open(map)
+            })
+
+            road_segs.push(seg)
+        }        
+
+        for (var road in road_segs) {
+            road_segs[road].setMap(map)
+        }
+    });
+}
+
+function get_raw_potholes(map,bbox){
+    $.ajax({
+        url: '/road_data/show/get_raw_potholes',
         data: {
           'csrfmiddlewaretoken': csrf_token,
             'bounds[]':bbox
@@ -194,20 +309,17 @@ function get_pothole_data_for(map,bbox){
         if(show_bounding_box)
             see_bounding_box(lastBox)
 
-        var skipPoints = 1
+        var skipPoints = 10
         var zoom = map.zoom
 
         response['list'].forEach(myFunction);
         function myFunction(item,index){
             if(index%skipPoints==0){
                 color = getColorFromRating(item['rating'])
-                // console.log(item)
-                // {lat: 72.90909269756398, lng: 19.125626230321046}
-                // { lat: 19.133050, lng: 72.913381 }
+
                 marker = new google.maps.Marker({
                     position: item['pot_loc'],
                     map: map,
-                    // icon: icons['parking'].icon
                     icon: {
                         path: google.maps.SymbolPath.CIRCLE,
                         fillColor: color,
@@ -226,11 +338,6 @@ function get_pothole_data_for(map,bbox){
 }
 
 function get_map_data_for(map,bbox){
-    var color = 0000
-    var index = 0
-
-    // map.setMap(null)
-
     $.ajax({
         url: '/road_data/show/get_roads_from_db',
         data: {
@@ -249,56 +356,33 @@ function get_map_data_for(map,bbox){
         all_road_10m_min_distance = response['list']
 
         for (var points in all_road_10m_min_distance) {
-            total_points = all_road_10m_min_distance[points]['latlongs'].length
-            pt = 0
-            while (pt < total_points) {
-                // color =color +0xFF ;
-                index++;
-                if (index % 3 == 1) {
-                    color = color_red;
-                } else if (index % 3 == 2) {
-                    color = color_red;
-                } else if (index % 3 == 0) {
-                    color = color_red;
-                }
-                if (typeof all_road_10m_min_distance[points]['latlongs'][pt + 1] != "undefined") {
-                    var flightPath = new google.maps.Polyline({
-                        path:
-                            [all_road_10m_min_distance[points]['latlongs'][pt],
-                            all_road_10m_min_distance[points]['latlongs'][pt + 1]]
-                        ,
-                        geodesic: true,
-                        strokeColor: '#f00', //change color for every line
-                        strokeOpacity: 1.0,
-                        strokeWeight: 5
-                    });
-                    flightPath.idfromopenstreet = all_road_10m_min_distance[points]["id"]
-                    flightPath.midLatLang = all_road_10m_min_distance[points]['latlongs'][pt]
-                    flightPath.addListener("click", function () {
-                        // console.log(this.idfromopenstreet)
-                        var infowindow = new google.maps.InfoWindow({
-                            content: this.idfromopenstreet.toString()
-                        });
-                        infowindow.setPosition(this.midLatLang);
-                        infowindow.open(map)
-                    })
+            var seg = new google.maps.Polyline({
+                path: [all_road_10m_min_distance[points]['latlongs'][0],all_road_10m_min_distance[points]['latlongs'][1]],
+                geodesic: true,
+                strokeColor: '#f00',
+                strokeOpacity: 1.0,
+                strokeWeight: 5
+            });
+            seg.idfromopenstreet = all_road_10m_min_distance[points]["id"]
+            seg.midLatLang = all_road_10m_min_distance[points]['latlongs'][0]
+            seg.addListener("click", function () {
+                var infowindow = new google.maps.InfoWindow({
+                    content: this.idfromopenstreet.toString()
+                });
+                infowindow.setPosition(this.midLatLang);
+                infowindow.open(map)
+            })
 
-                    reds.push(flightPath)
-                }else console.log("total_points"+total_points+" , pt"+" "+pt)
-                pt = pt + 1;
-            }
+            road_segs.push(seg)
         }        
 
-        for (var line in reds) {
-            reds[line].setMap(map)
+        for (var road in road_segs) {
+            road_segs[road].setMap(map)
         }
     });
 }
 
-function CenterControl(controlDiv, map) {
-    var chicago = { lat: 19.133050, lng: 72.913381 };
-
-    // Set CSS for the control border.
+function CenterControl(controlDiv, map, text) {
     var controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
     controlUI.style.border = '2px solid #fff';
@@ -318,18 +402,8 @@ function CenterControl(controlDiv, map) {
     controlText.style.lineHeight = '38px';
     controlText.style.paddingLeft = '5px';
     controlText.style.paddingRight = '5px';
-    controlText.innerHTML = 'Clear all Markers';
+    controlText.innerHTML = text;
     controlUI.appendChild(controlText);
-
-    // Setup the click event listeners: simply set the map to Chicago.
-    controlUI.addEventListener('click', function () {
-        // map.setCenter(chicago);
-        for (var m in markers) {
-            markers[m].setMap(null)
-        }
-        markers = []
-    });
-
 }
 
 function sleep(milliseconds) {
@@ -338,4 +412,9 @@ function sleep(milliseconds) {
     do {
       currentDate = Date.now();
     } while (currentDate - date < milliseconds);
-  }
+}
+
+// see_raw_roads()
+// see_raw_potholes()
+// see_road_quality()
+see_nothing()
