@@ -1,7 +1,8 @@
 ## Installation
 
+1. Install some prereqs (`sudo apt-get install libpq-dev`)
 1. Install postgresql (`sudo apt-get install postgresql postgresql-contrib`)
-2. Install postgis (`sudo apt-get install postgresql-9.5-postgis-2.1`)
+2. Install postgis (`sudo apt-get install postgis`)
 4. Create user 'road_data_user' with password 'pass@123' in psql, create database 'road_data_db' with postgis extension in it, grant superuser permission to 'road_data_user'
 commands to be executed in order
    1. `sudo -i -u postgres`
