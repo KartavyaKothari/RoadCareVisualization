@@ -5,7 +5,7 @@ django-extensions==2.2.9
 geographiclib==1.50
 geopy==1.22.0
 gunicorn==20.0.4
-numpy==1.18.5
+numpy==1.22.0
 pandas==1.0.4
 psycopg2==2.8.5
 python-dateutil==2.8.1
